@@ -491,9 +491,9 @@ with tab_cnpq:
         * **Categoria:** Estudante do Ensino Superior
         * **Proponente:** Daniel Pires Francisco (UNINASSAU Salvador)
         * **Declaração Obrigatória de IA (Item 2.2.2 do Edital):**
-          *Declara-se que ferramentas de IA Generativa (Google Gemini) foram utilizadas para auxílio na revisão linguística, compilação de cenários epidemiológicos simulados e formatação técnica. A concepção primária, o mérito científico e os requisitos de arquitetura são de autoria intelectual do proponente.*
+          *Declara-se que ferramentas de IA Generativa foram utilizadas para auxílio na revisão linguística, compilação de cenários epidemiológicos simulados e formatação técnica. A concepção primária, o mérito científico e os requisitos de arquitetura são de autoria intelectual do proponente.*
         """)
         
     st.markdown("---")
-    st.markdown("#### 📄 Dossiê Executivo para a Orientadora Acadêmica")
-    st.info("Este protótipo foi projetado em formato completo para apresentação inicial à orientação executiva, demonstrando viabilidade técnica, aderência total ao edital do CNPq e aplicabilidade imediata no SUS Bahia.")
+    st.markdown("#### 📄 Dossiê Executivo :)")
+    st.info("Este protótipo foi projetado em formato completo para apresentação inicial, demonstrando viabilidade técnica, aderência e aplicabilidade no SUS Bahia.")
