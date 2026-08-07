@@ -1,6 +1,6 @@
 # ==============================================================================
 # SIAT-BR: Sistema Integrado de Assistência e Telefarmácia Nacional
-# MPAT: Motor de Predição de Adesão Terapêutica e Autenticação Híbrida
+# MPAT: Motor de Predição de Adesão Terapêutica
 #
 # Protótipo Funcional - 32º Prêmio Jovem Cientista CNPq (2026)
 # Autor: Daniel Pires Francisco
@@ -30,119 +30,48 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS para UI/UX inspirada em Gov.br + Nubank + e-SUS
 st.markdown("""
 <style>
-    /* Estilo Geral */
-    .main {
-        background-color: #F8F9FA;
-    }
-    
-    /* Header Principal */
+    .main { background-color: #F8F9FA; }
     .main-header {
         background: linear-gradient(135deg, #0A3663 0%, #105293 100%);
-        color: white;
-        padding: 24px;
-        border-radius: 12px;
-        margin-bottom: 25px;
+        color: white; padding: 24px; border-radius: 12px; margin-bottom: 25px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
-    
-    .main-header h1 {
-        margin: 0;
-        font-size: 26px;
-        font-weight: 700;
-        color: #FFFFFF;
-    }
-    
-    .main-header p {
-        margin: 6px 0 0 0;
-        font-size: 14px;
-        color: #E2E8F0;
-    }
-    
-    /* Badge de Edital CNPq */
+    .main-header h1 { margin: 0; font-size: 26px; font-weight: 700; color: #FFFFFF; }
+    .main-header p { margin: 6px 0 0 0; font-size: 14px; color: #E2E8F0; }
     .cnpq-badge {
-        background-color: #FFB800;
-        color: #1A202C;
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 700;
-        display: inline-block;
-        margin-top: 10px;
+        background-color: #FFB800; color: #1A202C; padding: 4px 12px;
+        border-radius: 20px; font-size: 12px; font-weight: 700; display: inline-block; margin-top: 10px;
     }
-    
-    /* Cards de Indicadores (Farol da Saúde) */
     .farol-card {
-        padding: 20px;
-        border-radius: 12px;
-        color: white;
-        text-align: center;
-        font-weight: bold;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        margin-bottom: 15px;
+        padding: 20px; border-radius: 12px; color: white; text-align: center;
+        font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 15px;
     }
     .farol-verde { background-color: #2EC4B6; color: #042E2B; }
     .farol-amarelo { background-color: #FFBF00; color: #4A3800; }
     .farol-vermelho { background-color: #E71D36; color: #FFFFFF; }
-    
-    /* Metric Container */
     .metric-box {
-        background: white;
-        border-radius: 10px;
-        padding: 16px;
-        border: 1px solid #E2E8F0;
-        border-left: 5px solid #105293;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        background: white; border-radius: 10px; padding: 16px; border: 1px solid #E2E8F0;
+        border-left: 5px solid #105293; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
     }
-    
-    .metric-value {
-        font-size: 24px;
-        font-weight: 700;
-        color: #0A3663;
-    }
-    
-    .metric-label {
-        font-size: 12px;
-        color: #64748B;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    
-    /* Tab Styling */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
-    }
-    .stTabs [data-baseweb="tab"] {
-        height: 50px;
-        white-space: pre-wrap;
-        background-color: #FFFFFF;
-        border-radius: 8px;
-        color: #475569;
-        font-weight: 600;
-    }
-    .stTabs [aria-selected="true"] {
-        background-color: #0A3663 !important;
-        color: #FFFFFF !important;
+    .metric-value { font-size: 24px; font-weight: 700; color: #0A3663; }
+    .metric-label { font-size: 12px; color: #64748B; text-transform: uppercase; letter-spacing: 0.5px; }
+    .battle-card {
+        background: #FFFFFF; border: 2px solid #E2E8F0; border-radius: 12px; padding: 18px; margin-top: 10px;
     }
 </style>
 """, unsafe_allow_html=True)
 
 
 # ------------------------------------------------------------------------------
-# 2. SIMULAÇÃO DE DADOS EPIDEMIOLÓGICOS (SALVADOR/BAHIA) E MODELO IA
+# 2. SIMULAÇÃO DE DADOS EPIDEMIOLÓGICOS E MODELO IA
 # ------------------------------------------------------------------------------
-
 @st.cache_data
 def generate_salvador_synthetic_data(n_samples=600):
     np.random.seed(42)
-    
-    bairros = [
-        "Pelourinho / Centro Histórico", "Cajazeiras", "Subúrbio Ferroviário",
-        "Itapuã", "Liberdade", "Pau da Lima", "Brotas", "Cabula", "Pituba / Costa Azul"
-    ]
-    
+    bairros = ["Pelourinho / Centro Histórico", "Cajazeiras", "Subúrbio Ferroviário",
+               "Itapuã", "Liberdade", "Pau da Lima", "Brotas", "Cabula", "Pituba / Costa Azul"]
     doencas = ["Tuberculose", "Hanseníase", "Leishmaniose Visceral", "Doença de Chagas"]
     
     data = []
@@ -154,59 +83,41 @@ def generate_salvador_synthetic_data(n_samples=600):
         bairro = np.random.choice(bairros, p=[0.12, 0.18, 0.20, 0.10, 0.12, 0.10, 0.08, 0.06, 0.04])
         doenca = np.random.choice(doencas, p=[0.40, 0.30, 0.15, 0.15])
         
-        # Variáveis determinantes de adesão
         dias_posse = np.random.randint(15, 91)
         pdc = round((dias_posse / 90.0) * 100, 1)
-        
         efeitos_colaterais = np.random.choice([0, 1, 2, 3], p=[0.4, 0.3, 0.2, 0.1])
         vulnerabilidade = round(np.random.beta(2, 2 if bairro in ["Subúrbio Ferroviário", "Cajazeiras", "Liberdade"] else 5), 2)
         polifarmacia = np.random.choice([0, 1], p=[0.6, 0.4])
         idade = np.random.randint(18, 78)
         suporte_familiar = np.random.choice([0, 1], p=[0.3, 0.7])
         
-        # Regra do Target (Risco de Abandono MPAT):
-        # 0 = Baixo Risco, 1 = Risco Moderado, 2 = Alto Risco
         if pdc < 60 or (pdc < 75 and efeitos_colaterais >= 2 and vulnerabilidade > 0.6):
-            target = 2  # Alto Risco
+            target = 2
         elif pdc < 80 or efeitos_colaterais >= 2 or vulnerabilidade > 0.7:
-            target = 1  # Risco Moderado
+            target = 1
         else:
-            target = 0  # Baixo Risco
+            target = 0
             
         data.append({
-            "patient_id": f"PAT-{i:04d}",
-            "cpf_fake": cpf_fake,
-            "patient_hash": cpf_hash,
-            "cns_fake": cns_fake,
-            "bairro": bairro,
-            "doenca": doenca,
-            "idade": idade,
-            "dias_posse": dias_posse,
-            "pdc_score": pdc,
-            "efeitos_colaterais": efeitos_colaterais,
-            "vulnerabilidade_social": vulnerabilidade,
-            "polifarmacia": polifarmacia,
-            "suporte_familiar": suporte_familiar,
-            "target_abandono": target
+            "patient_id": f"PAT-{i:04d}", "cpf_fake": cpf_fake, "patient_hash": cpf_hash,
+            "cns_fake": cns_fake, "bairro": bairro, "doenca": doenca, "idade": idade,
+            "dias_posse": dias_posse, "pdc_score": pdc, "efeitos_colaterais": efeitos_colaterais,
+            "vulnerabilidade_social": vulnerabilidade, "polifarmacia": polifarmacia,
+            "suporte_familiar": suporte_familiar, "target_abandono": target
         })
-        
     return pd.DataFrame(data)
-
 
 @st.cache_resource
 def train_mpat_model(df):
     features = ["pdc_score", "efeitos_colaterais", "vulnerabilidade_social", "polifarmacia", "suporte_familiar", "idade"]
-    X = df[features]
-    y = df["target_abandono"]
-    
+    X, y = df[features], df["target_abandono"]
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
     
     clf = RandomForestClassifier(n_estimators=100, max_depth=6, random_state=42)
     clf.fit(X_train, y_train)
     
-    y_pred = clf.predict(X_test)
-    acc = accuracy_score(y_test, y_pred)
-    f1 = f1_score(y_test, y_pred, average="weighted")
+    acc = accuracy_score(y_test, clf.predict(X_test))
+    f1 = f1_score(y_test, clf.predict(X_test), average="weighted")
     
     feature_imp = pd.DataFrame({
         "Atributo": ["PDC (%)", "Efeitos Colaterais", "Vulnerabilidade Social", "Polifarmácia", "Suporte Familiar", "Idade"],
@@ -215,14 +126,12 @@ def train_mpat_model(df):
     
     return clf, acc, f1, feature_imp
 
-
-# Inicialização dos Dados e Modelo
 df_salvador = generate_salvador_synthetic_data()
 model, model_acc, model_f1, feat_importance = train_mpat_model(df_salvador)
 
 
 # ------------------------------------------------------------------------------
-# 3. CABEÇALHO PRINCIPAL E NAVEGAÇÃO
+# 3. CABEÇALHO E NAVEGAÇÃO
 # ------------------------------------------------------------------------------
 st.markdown("""
 <div class="main-header">
@@ -239,9 +148,8 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Tabs Principais de Navegação do Sistema
 tab_cidadao, tab_farmaceutico, tab_dash, tab_cnpq = st.tabs([
-    "👤 1. Visão do Cidadão & Alfabetização Fisiológica",
+    "👤 1. Visão do Cidadão & Jornada Interativa",
     "🩺 2. Cockpit Profissional do Farmacêutico",
     "📊 3. Dashboard Epidemiológico & IA",
     "📜 4. Governança, LGPD & CNPq"
@@ -249,10 +157,10 @@ tab_cidadao, tab_farmaceutico, tab_dash, tab_cnpq = st.tabs([
 
 
 # ------------------------------------------------------------------------------
-# TAB 1: VISÃO DO CIDADÃO, ALFABETIZAÇÃO FISIOLÓGICA & TELEATENDIMENTO
+# TAB 1: VISÃO DO CIDADÃO, JORNADA LÚDICA, CHAT & FARMACOVIGILÂNCIA
 # ------------------------------------------------------------------------------
 with tab_cidadao:
-    st.subheader("📱 Portal do Cidadão - Experiência Descomplicada do Paciente")
+    st.subheader("📱 Portal do Cidadão — Acompanhamento do Tratamento")
     
     col_sel, col_info = st.columns([1, 2])
     
@@ -279,68 +187,38 @@ with tab_cidadao:
             </div>
         </div>
         """, unsafe_allow_html=True)
-
+        
         # MÓDULO DE SOLICITAÇÃO E ALERTA AUTOMÁTICO DE TELEATENDIMENTO
         st.markdown("---")
-        st.markdown("#### 📞 Teleatendimento & Suporte On-line")
+        st.markdown("#### 📞 Teleatendimento & Chamada Direta")
         
         if p_data["target_abandono"] == 2:
-            st.error("🚨 **ALERTA AUTOMÁTICO DISPARADO!**\nIdentificamos um alto risco de descontinuidade no seu histórico. A equipe de telefarmácia do SUS recebeu um chamado prioritário e entrará em contato em até 15 minutos.")
+            st.error("🚨 **ALERTA AUTOMÁTICO DISPARADO!**\nIdentificamos alto risco no seu histórico. A equipe de telefarmácia do SUS recebeu um chamado prioritário para entrar em contato em até 15 minutos.")
         
         if st.button("📲 Solicitar Teleatendimento Agora"):
-            st.success("✅ **Solicitação Confirmada!** Um farmacêutico clínico do SUS foi notificado e iniciará a chamada de apoio em breve.")
+            st.success("✅ **Solicitação Confirmada!** Um farmacêutico clínico iniciará a chamada de suporte em breve.")
 
     with col_info:
-        st.markdown("#### 🟢 Farol da Saúde (Status em Tempo Real)")
-        
+        st.markdown("#### 🟢 Farol da Saúde (Status do Tratamento)")
         risk_class = p_data["target_abandono"]
         if risk_class == 0:
-            st.markdown("""
-            <div class="farol-card farol-verde">
-                <h2>🟢 TRATAMENTO EM DIA (ADESÃO ADEQUADA)</h2>
-                <p>Você está no caminho certo! Suas retiradas estão regulares e o seu plano terapêutico está protegido.</p>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown("""<div class="farol-card farol-verde"><h2>🟢 TRATAMENTO EM DIA (ADESÃO ADEQUADA)</h2><p>Você está no caminho certo! Seu exército de defesa está forte e o plano terapêutico está protegido.</p></div>""", unsafe_allow_html=True)
         elif risk_class == 1:
-            st.markdown("""
-            <div class="farol-card farol-amarelo">
-                <h2>🟡 ATENÇÃO: RETIRADA DE MEDICAMENTO PRÓXIMA</h2>
-                <p>Atenção ao seu estoque. Agende sua ida à Unidade Básica de Saúde nos próximos 5 dias para não interromper a dose.</p>
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown("""<div class="farol-card farol-amarelo"><h2>🟡 ATENÇÃO: RETIRADA PRÓXIMA</h2><p>Reforce o estoque das suas tropas. Agende sua ida ao posto de saúde nos próximos 5 dias.</p></div>""", unsafe_allow_html=True)
         else:
-            st.markdown("""
-            <div class="farol-card farol-vermelho">
-                <h2>🔴 ALERTA: SUPORTE FARMACÊUTICO SOLICITADO</h2>
-                <p>Identificamos risco de descontinuidade no seu tratamento. Entre em contato com a equipe de telefarmácia ou vá ao posto de saúde.</p>
-            </div>
-            """, unsafe_allow_html=True)
-            
-        # Extrato de Adesão Terapêutica (Linha do Tempo Visual)
-        st.markdown("##### 📦 Extrato de Rastreabilidade e Retiradas (PDC)")
+            st.markdown("""<div class="farol-card farol-vermelho"><h2>🔴 ALERTA: SUPORTE SOLICITADO</h2><p>Suas tropas precisam de reforço urgente. Agendamento prioritário ativado.</p></div>""", unsafe_allow_html=True)
+
         st.progress(int(p_data["pdc_score"]) / 100)
-        st.caption(f"Proporção de Dias Cobertos (PDC): **{p_data['pdc_score']}%** dos últimos 90 dias com medicação garantida em posse.")
-        
-        # Carteira de Benefícios Não-Financeiros
-        st.markdown("##### 🏅 Extrato de Cidadania Digital (Benefícios Não-Financeiros)")
-        st.info("💡 Conforme o Artigo 199 da CF/88, o SIAT-BR concede **incentivos sociais não-monetários** para manter a saúde pública protegida.")
-        
-        b1, b2, b3 = st.columns(3)
-        with b1:
-            st.metric("Tokens Acumulados", f"{int(p_data['pdc_score'] * 12)} pts", delta="+120 este mês")
-        with b2:
-            st.metric("Passe de Transporte", "2 Recargas Liberadas" if p_data['pdc_score'] > 80 else "Bloqueado")
-        with b3:
-            st.metric("Prioridade de Agendamento", "Nível N2 - Ativo" if p_data['pdc_score'] > 75 else "Nível N4")
+        st.caption(f"Proporção de Dias Cobertos (PDC): **{p_data['pdc_score']}%** dos últimos 90 dias com medicação garantida.")
 
         st.markdown("---")
-        # MÓDULO DE ALFABETIZAÇÃO FISIOLÓGICA PROGRESSIVA (FRAMEWORK DE NÍVEIS COGNITIVOS)
+        # MÓDULO DE ALFABETIZAÇÃO FISIOLÓGICA PROGRESSIVA (MENSAGENS & JORNADA VISUAL)
         st.markdown("### 🎓 Módulo de Alfabetização Fisiológica Progressiva")
-        st.caption("Aprenda como a medicação atua no seu corpo e entenda seus sintomas para nunca interromper o tratamento sem orientação.")
+        st.caption("Adaptação pedagógica contínua para capacitar o cidadão a entender o próprio corpo sem termos difíceis.")
         
         nivel_cog = st.radio(
-            "Selecione a Profundidade Cognitiva do Aprendizado:",
-            ["Nível 1 (Básico / Linguagem Lúdica)", "Nível 3 (Intermediário / Rastreio Sintomático)", "Nível 6 (Avançado / Gamificação da Saúde)", "Nível 9 (Profundo / Relatório Clínico Completo)"],
+            "Selecione o Nível de Linguagem e Profundidade Cognitiva:",
+            ["Nível 1 (Linguagem Lúdica / Básico)", "Nível 3 (Rastreio Sintomático)", "Nível 6 (Jornada Interativa da Batalha)", "Nível 9 (Relatório Fisiológico Descomplicado)"],
             horizontal=True
         )
         
@@ -348,33 +226,159 @@ with tab_cidadao:
             st.info("""
             🛡️ **A Batalha Dentro do Seu Corpo (Metáfora Lúdica):**
             
-            O medicamento antibiótico é como um **exército de defesa** enviado para combater as **bactérias invasoras**. 
-            Quando você toma o remédio nos primeiros dias, as bactérias mais fracas caem e os sintomas diminuem. 
-            **Atenção:** se você parar o remédio no meio da batalha só porque se sentiu melhor, os invasores mais fortes que sobraram se multiplicam e ficam imunes ao seu exército!
+            O medicamento é como um **exército de reforço** enviado para ajudar seu corpo a derrotar as **bactérias invasoras**. 
+            Quando você toma o remédio no horário certo, seus soldados ganham superforça. 
+            **Importante:** Se você parar de tomar o remédio no meio do caminho porque já se sente melhor, é como tirar o exército antes da vitória. As poucas bactérias invasoras que sobrarem vão se multiplicar e ficar imunes ao remédio!
             """)
+            
         elif "Nível 3" in nivel_cog:
             st.warning("""
-            🔍 **Guia de Rastreio Sintomático (Sintoma Comum vs. Sinal de Alarme):**
+            🔍 **Guia de Rastreio Sintomático (Normal vs. Sinal de Alarme):**
             
-            * **Efeito Comum (Não interrompa o remédio):** Urina ou suor em tom alaranjado (provocado pela Rifampicina na Tuberculose). É uma reação inofensiva e esperada.
-            * **Sinal de Alarme (Entre em contato com a Telefarmácia):** Olhos ou pele amarelados (Icterícia/Sobrecarga do fígado), manchas vermelhas com coceira intensa ou vômitos persistentes.
+            * **Efeito Normal (Não pare o remédio):** Urina ou suor com cor alaranjada (causado pela medicação da Tuberculose). É uma reação inofensiva e temporária.
+            * **Sinal de Alarme (Procure o posto ou chame a telefarmácia):** Olhos e pele amarelados (Icterícia), coceira intensa no corpo ou tonturas fortes. Entre em contato com o suporte imediatamente!
             """)
+            
         elif "Nível 6" in nivel_cog:
-            st.success("🎮 **Gamificação da Saúde (PBC-Saúde) & Ciclo de Cura:**\n\nAo manter sua adesão diária, você acumula Pontos de Cidadania e acompanha visualmente a regressão da carga patogênica no seu organismo:")
-            df_ciclo = pd.DataFrame({
-                "Semana de Tratamento": [1, 2, 3, 4, 5, 6, 7, 8],
-                "Carga Patogênica Estimada (%)": [100, 70, 40, 20, 8, 2, 0.5, 0]
-            })
-            st.line_chart(df_ciclo, x="Semana de Tratamento", y="Carga Patogênica Estimada (%)")
-        else:
-            st.markdown("""
-            **📊 Parâmetros Farmacocinéticos e Histórico Clínico (Visão Avançada):**
+            st.markdown("#### ⚔️ A Jornada da Sua Batalha (Progresso Semanal)")
+            st.caption("Mova a barra abaixo para ver como cada semana de remédio fortalece suas defesas e elimina os invasores:")
             
-            * **Pico de Concentração Plasmática ($C_{max}$):** $8.5\,\mu g/mL$ em $t_{max} = 2.1\,h$.
-            * **Meia-vida de Eliminação ($t_{1/2}$):** $3.5\,h$.
-            * **Taxa de Depuração Hepática (Clearance):** Monitoramento contínuo de TGO/TGP recomendado no intervalo de 30 dias.
-            * **Conformidade de Dose:** Posologia diária em estrita observância ao PCDT do Ministério da Saúde.
-            """)
+            semana_jornada = st.slider("Selecione a Semana da sua Jornada de Cura:", 1, 8, 3)
+            
+            # Cálculo dinâmico para representação visual e lúdica
+            forca_defesa = min(100, 30 + semana_jornada * 9)
+            invasores_restantes = max(0, 100 - semana_jornada * 12)
+            
+            col_a, col_b = st.columns(2)
+            with col_a:
+                st.markdown(f"##### 🛡️ Força do seu Exército de Defesa: **{forca_defesa}%**")
+                st.progress(forca_defesa / 100)
+                st.caption("Imunidade + Medicamento trabalhando juntos.")
+            with col_b:
+                st.markdown(f"##### 👾 Bactérias Invasoras Restantes: **{invasores_restantes}%**")
+                st.progress(invasores_restantes / 100)
+                st.caption("Redução gradativa dos agentes causadores da doença.")
+                
+            if semana_jornada <= 2:
+                st.markdown("""<div class="battle-card">🟡 <strong>Fase 1: Início do Cerco (Semanas 1-2)</strong><br>O remédio entra em campo! O exército reduz os primeiros sintomas. Não pare agora, os invasores ainda estão fortes.</div>""", unsafe_allow_html=True)
+            elif semana_jornada <= 5:
+                st.markdown("""<div class="battle-card">🟢 <strong>Fase 2: Domínio da Batalha (Semanas 3-5)</strong><br>A maioria dos invasores foi derrotada. É aqui que muitos erram e param de tomar o remédio. Mantenha o tratamento para eliminar os invasores escondidos!</div>""", unsafe_allow_html=True)
+            else:
+                st.markdown("""<div class="battle-card">🏆 <strong>Fase 3: Vitória e Limpeza Total (Semanas 6-8)</strong><br>Seu exército está no comando completo! O corpo regenera os tecidos saudáveis e a cura definitiva é alcançada.</div>""", unsafe_allow_html=True)
+
+        else:
+            st.markdown("#### 📊 Painel de Saúde e Funcionamento do Seu Corpo")
+            st.caption("Acompanhe como seu organismo está absorvendo a medicação e se mantendo seguro:")
+            
+            q1, q2, q3 = st.columns(3)
+            with q1:
+                st.markdown("""
+                <div class="metric-box">
+                    <div class="metric-label">Velocidade de Ação do Remédio</div>
+                    <div class="metric-value">Rápida (1 a 2h)</div>
+                    <p style="font-size:12px; color:#475569; margin-top:5px;">O corpo absorve o remédio rapidamente e começa a agir nas primeiras horas.</p>
+                </div>
+                """, unsafe_allow_html=True)
+            with q2:
+                st.markdown("""
+                <div class="metric-box">
+                    <div class="metric-label">Tempo de Proteção Diária</div>
+                    <div class="metric-value">24 Horas</div>
+                    <p style="font-size:12px; color:#475569; margin-top:5px;">Cada dose garante 1 dia inteiro de proteção. Tomar no mesmo horário mantém o escudo ativo.</p>
+                </div>
+                """, unsafe_allow_html=True)
+            with q3:
+                st.markdown("""
+                <div class="metric-box">
+                    <div class="metric-label">Fígado e Rins (Filtros do Corpo)</div>
+                    <div class="metric-value">Seguros (Normal)</div>
+                    <p style="font-size:12px; color:#475569; margin-top:5px;">Exames e histórico indicam boa tolerância ao tratamento, sem sinais de sobrecarga.</p>
+                </div>
+                """, unsafe_allow_html=True)
+
+    # --------------------------------------------------------------------------
+    # NOVO MÓDULO: FARMACOVIGILÂNCIA & REGISTRO DE SINTOMAS NÃO PREVISTOS
+    # --------------------------------------------------------------------------
+    st.markdown("---")
+    st.markdown("### ⚠️ Registro de Sintomas e Efeitos Adversos Não Previstos")
+    st.caption("Sentiu algo diferente que não estava previsto no tratamento? Relate aqui para a equipe de farmacovigilância orientar você.")
+    
+    with st.expander("📝 Clique para Relatar um Novo Sintoma ou Reação Adversa"):
+        with st.form("form_farmacovigilancia"):
+            st.write("**Descreva o que você está sentindo:**")
+            sintoma_descr = st.text_area("Descreva o sintoma (ex: manchas vermelhas na pele, dor de cabeça forte, enjoo fora do comum, tontura ao levantar):", placeholder="Exemplo: Comecei a sentir tontura forte cerca de 1 hora após tomar o remédio da manhã...")
+            
+            c_sint1, c_sint2 = st.columns(2)
+            with c_sint1:
+                sintoma_intensidade = st.select_slider("Intensidade do Sintoma:", options=["Leve (Desconforto pequeno)", "Moderada (Incomoda a rotina)", "Forte (Impede tarefas)", "Severa (Necessita ajuda)"])
+            with c_sint2:
+                sintoma_data = st.date_input("Quando este sintoma começou?", datetime.now())
+                
+            btn_relatar_sintoma = st.form_submit_button("📩 Enviar Relato para a Farmacovigilância")
+            
+            if btn_relatar_sintoma:
+                if sintoma_descr.strip():
+                    st.success("✅ **Relato registrado com sucesso!** Nossa equipe de farmacovigilância analisará seu relato. Se necessário, o farmacêutico clínico entrará em contato via telefarmácia.")
+                else:
+                    st.warning("Por favor, descreva o sintoma antes de enviar o relato.")
+
+    # --------------------------------------------------------------------------
+    # NOVO MÓDULO: CHAT GUIA INTERATIVO E PERGUNTAS FREQUENTES (FAQ)
+    # ------------------------------------------------------------------------------
+    st.markdown("---")
+    st.markdown("### 💬 Chat Guia do SIAT-BR (Assistente Interativo)")
+    st.caption("Tire suas dúvidas em tempo real ou selecione uma das perguntas mais comuns sobre o seu tratamento:")
+
+    # Pergunta pré-selecionada via botões rápidos
+    if "chat_messages" not in st.session_state:
+        st.session_state.chat_messages = [
+            {"role": "assistant", "content": "Olá! Sou o Assistente Virtual do SIAT-BR. Como posso te ajudar com o seu tratamento hoje? Você pode digitar abaixo ou escolher uma das perguntas frequentes!"}
+        ]
+
+    # Botões de perguntas frequentes
+    st.write("**Perguntas Frequentes (Clique para resposta rápida):**")
+    faq_col1, faq_col2, faq_col3 = st.columns(3)
+    
+    faq_answer = None
+    with faq_col1:
+        if st.button("❓ O que fazer se eu esquecer de tomar a dose?"):
+            faq_answer = ("Esqueci a dose", "Se você esqueceu de tomar a dose no horário certo, tome assim que lembrar! Mas atenção: se já estiver perto do horário da próxima dose, pule a dose esquecida e tome apenas a dose normal no horário habitual. **Nunca tome duas doses juntas para compensar.**")
+    with faq_col2:
+        if st.button("❓ Posso tomar o remédio com comida ou em jejum?"):
+            faq_answer = ("Tomar com comida ou jejum", "Para remédios da Tuberculose (como a Rifampicina), o ideal é tomar em jejum (1 hora antes do café da manhã) para melhor absorção. Se sentir enjoo, avise o farmacêutico para ajustar o horário com um pequeno lanche leve.")
+    with faq_col3:
+        if st.button("❓ É normal sentir enjoo nos primeiros dias?"):
+            faq_answer = ("Enjoo nos primeiros dias", "Sim, um enjoo leve nos primeiros dias de tratamento pode acontecer enquanto seu corpo se adapta ao remédio. Se o enjoo for acompanhado de vômitos diários ou pele/olhos amarelados, avise a equipe de saúde imediatamente!")
+
+    if faq_answer:
+        st.session_state.chat_messages.append({"role": "user", "content": faq_answer[0]})
+        st.session_state.chat_messages.append({"role": "assistant", "content": faq_answer[1]})
+
+    # Exibição do histórico de mensagens do Chat
+    for msg in st.session_state.chat_messages:
+        with st.chat_message(msg["role"]):
+            st.write(msg["content"])
+
+    # Input de texto livre para o usuário
+    if user_input := st.chat_input("Digite sua dúvida sobre o tratamento aqui..."):
+        st.session_state.chat_messages.append({"role": "user", "content": user_input})
+        with st.chat_message("user"):
+            st.write(user_input)
+
+        # Lógica didática de resposta do Assistente
+        user_text_lower = user_input.lower()
+        if "esquec" in user_text_lower or "horario" in user_text_lower:
+            bot_reply = "Se esquecer de tomar a dose, tome assim que lembrar no mesmo dia. Se já for o dia seguinte, siga o horário normal sem dobrar a quantidade de comprimidos!"
+        elif "enjoo" in user_text_lower or "vomi" in user_text_lower or "estomago" in user_text_lower:
+            bot_reply = "Desconfortos estomacais leves podem acontecer. Experimente tomar com bastante água. Se o enjoo persistir por mais de 3 dias ou impedir a alimentação, use a aba de relato de sintomas para notificarmos o farmacêutico!"
+        elif "beber" in user_text_lower or "alcool" in user_text_lower or "cerveja" in user_text_lower:
+            bot_reply = "Bebidas alcoólicas devem ser evitadas durante todo o tratamento. O álcool sobrecarrega o fígado e pode cortar o efeito do remédio de combate às bactérias."
+        else:
+            bot_reply = f"Entendi sua dúvida sobre '{user_input}'. Com base no protocolo oficial do Ministério da Saúde, manter a medicação diária sem interrupções é o segredo para a cura. Caso precise de orientação presencial ou personalizada, utilize o botão de Solicitar Teleatendimento ao lado!"
+
+        st.session_state.chat_messages.append({"role": "assistant", "content": bot_reply})
+        with st.chat_message("assistant"):
+            st.write(bot_reply)
 
 
 # ------------------------------------------------------------------------------
@@ -424,7 +428,7 @@ with tab_farmaceutico:
         
         st.write("")
         if risk_pred == 2:
-            st.error("🚨 **FILA DE TELEATENDIMENTO PRIOIRITÁRIA:** Alerta automático enviado para a central. Paciente incluído na lista de busca ativa urgente do dia.")
+            st.error("🚨 **FILA DE TELEATENDIMENTO PRIORITÁRIA:** Alerta automático enviado para a central. Paciente incluído na lista de busca ativa urgente do dia.")
         elif risk_pred == 1:
             st.warning("⚠️ **TELEATENDIMENTO RECOMENDADO:** Agendar contato via mensagem ou chamada em até 7 dias.")
             
