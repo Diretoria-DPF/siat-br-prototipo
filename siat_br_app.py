@@ -253,7 +253,6 @@ tab_cidadao, tab_farmaceutico, tab_dash, tab_cnpq = st.tabs([
 # ------------------------------------------------------------------------------
 with tab_cidadao:
     st.subheader("📱 Portal do Cidadão - Experiência Descomplicada do Paciente")
-    st.caption("Interface inspirada na simplicidade do Gov.br e na fluidez do Nubank para engajamento contínuo no tratamento.")
     
     col_sel, col_info = st.columns([1, 2])
     
