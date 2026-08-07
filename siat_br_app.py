@@ -241,7 +241,7 @@ st.markdown("""
 
 # Tabs Principais de Navegação do Sistema
 tab_cidadao, tab_farmaceutico, tab_dash, tab_cnpq = st.tabs([
-    "👤 1. Visão do Cidadão (Farol da Saúde)",
+    "👤 1. Visão do Cidadão & Alfabetização Fisiológica",
     "🩺 2. Cockpit Profissional do Farmacêutico",
     "📊 3. Dashboard Epidemiológico & IA",
     "📜 4. Governança, LGPD & CNPq"
@@ -249,7 +249,7 @@ tab_cidadao, tab_farmaceutico, tab_dash, tab_cnpq = st.tabs([
 
 
 # ------------------------------------------------------------------------------
-# TAB 1: VISÃO DO CIDADÃO (FAROL DA SAÚDE)
+# TAB 1: VISÃO DO CIDADÃO, ALFABETIZAÇÃO FISIOLÓGICA & TELEATENDIMENTO
 # ------------------------------------------------------------------------------
 with tab_cidadao:
     st.subheader("📱 Portal do Cidadão - Experiência Descomplicada do Paciente")
@@ -279,6 +279,16 @@ with tab_cidadao:
             </div>
         </div>
         """, unsafe_allow_html=True)
+
+        # MÓDULO DE SOLICITAÇÃO E ALERTA AUTOMÁTICO DE TELEATENDIMENTO
+        st.markdown("---")
+        st.markdown("#### 📞 Teleatendimento & Suporte On-line")
+        
+        if p_data["target_abandono"] == 2:
+            st.error("🚨 **ALERTA AUTOMÁTICO DISPARADO!**\nIdentificamos um alto risco de descontinuidade no seu histórico. A equipe de telefarmácia do SUS recebeu um chamado prioritário e entrará em contato em até 15 minutos.")
+        
+        if st.button("📲 Solicitar Teleatendimento Agora"):
+            st.success("✅ **Solicitação Confirmada!** Um farmacêutico clínico do SUS foi notificado e iniciará a chamada de apoio em breve.")
 
     with col_info:
         st.markdown("#### 🟢 Farol da Saúde (Status em Tempo Real)")
@@ -322,6 +332,49 @@ with tab_cidadao:
             st.metric("Passe de Transporte", "2 Recargas Liberadas" if p_data['pdc_score'] > 80 else "Bloqueado")
         with b3:
             st.metric("Prioridade de Agendamento", "Nível N2 - Ativo" if p_data['pdc_score'] > 75 else "Nível N4")
+
+        st.markdown("---")
+        # MÓDULO DE ALFABETIZAÇÃO FISIOLÓGICA PROGRESSIVA (FRAMEWORK DE NÍVEIS COGNITIVOS)
+        st.markdown("### 🎓 Módulo de Alfabetização Fisiológica Progressiva")
+        st.caption("Aprenda como a medicação atua no seu corpo e entenda seus sintomas para nunca interromper o tratamento sem orientação.")
+        
+        nivel_cog = st.radio(
+            "Selecione a Profundidade Cognitiva do Aprendizado:",
+            ["Nível 1 (Básico / Linguagem Lúdica)", "Nível 3 (Intermediário / Rastreio Sintomático)", "Nível 6 (Avançado / Gamificação da Saúde)", "Nível 9 (Profundo / Relatório Clínico Completo)"],
+            horizontal=True
+        )
+        
+        if "Nível 1" in nivel_cog:
+            st.info("""
+            🛡️ **A Batalha Dentro do Seu Corpo (Metáfora Lúdica):**
+            
+            O medicamento antibiótico é como um **exército de defesa** enviado para combater as **bactérias invasoras**. 
+            Quando você toma o remédio nos primeiros dias, as bactérias mais fracas caem e os sintomas diminuem. 
+            **Atenção:** se você parar o remédio no meio da batalha só porque se sentiu melhor, os invasores mais fortes que sobraram se multiplicam e ficam imunes ao seu exército!
+            """)
+        elif "Nível 3" in nivel_cog:
+            st.warning("""
+            🔍 **Guia de Rastreio Sintomático (Sintoma Comum vs. Sinal de Alarme):**
+            
+            * **Efeito Comum (Não interrompa o remédio):** Urina ou suor em tom alaranjado (provocado pela Rifampicina na Tuberculose). É uma reação inofensiva e esperada.
+            * **Sinal de Alarme (Entre em contato com a Telefarmácia):** Olhos ou pele amarelados (Icterícia/Sobrecarga do fígado), manchas vermelhas com coceira intensa ou vômitos persistentes.
+            """)
+        elif "Nível 6" in nivel_cog:
+            st.success("🎮 **Gamificação da Saúde (PBC-Saúde) & Ciclo de Cura:**\n\nAo manter sua adesão diária, você acumula Pontos de Cidadania e acompanha visualmente a regressão da carga patogênica no seu organismo:")
+            df_ciclo = pd.DataFrame({
+                "Semana de Tratamento": [1, 2, 3, 4, 5, 6, 7, 8],
+                "Carga Patogênica Estimada (%)": [100, 70, 40, 20, 8, 2, 0.5, 0]
+            })
+            st.line_chart(df_ciclo, x="Semana de Tratamento", y="Carga Patogênica Estimada (%)")
+        else:
+            st.markdown("""
+            **📊 Parâmetros Farmacocinéticos e Histórico Clínico (Visão Avançada):**
+            
+            * **Pico de Concentração Plasmática ($C_{max}$):** $8.5\,\mu g/mL$ em $t_{max} = 2.1\,h$.
+            * **Meia-vida de Eliminação ($t_{1/2}$):** $3.5\,h$.
+            * **Taxa de Depuração Hepática (Clearance):** Monitoramento contínuo de TGO/TGP recomendado no intervalo de 30 dias.
+            * **Conformidade de Dose:** Posologia diária em estrita observância ao PCDT do Ministério da Saúde.
+            """)
 
 
 # ------------------------------------------------------------------------------
@@ -370,6 +423,11 @@ with tab_farmaceutico:
         """, unsafe_allow_html=True)
         
         st.write("")
+        if risk_pred == 2:
+            st.error("🚨 **FILA DE TELEATENDIMENTO PRIOIRITÁRIA:** Alerta automático enviado para a central. Paciente incluído na lista de busca ativa urgente do dia.")
+        elif risk_pred == 1:
+            st.warning("⚠️ **TELEATENDIMENTO RECOMENDADO:** Agendar contato via mensagem ou chamada em até 7 dias.")
+            
         st.markdown("##### 🧠 Justificativa Clínica da IA (XAI - Explainable AI)")
         
         reasons = []
