@@ -53,7 +53,7 @@ Ideias em avaliação, sem prazo definido: validação com especialistas e servi
 
 ## 👤 Autoria
 
-Criado por **Daniel Pires Francisco** (Daniel P Francisco), Presidente da LAIFT e graduando em Farmácia na UNINASSAU Salvador.
+Criado por **Daniel Pires Francisco**, Presidente da LAIFT e graduando em Farmácia na UNINASSAU Salvador.
 
 - Portfólio, currículo e serviços: https://dpflabs.com
 - Plataforma LAIFT: https://laift.com.br
