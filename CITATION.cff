@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "Se este protótipo for útil para o seu trabalho, cite-o como abaixo."
+title: "SIAT-BR e MPAT: protótipo de telefarmácia e predição de adesão terapêutica (dados simulados)"
+type: software
+authors:
+  - family-names: "Francisco"
+    given-names: "Daniel Pires"
+    # orcid: "https://orcid.org/0000-0000-0000-0000"  # preencher quando o perfil ORCID for criado
+repository-code: "https://github.com/Diretoria-DPF/siat-br-prototipo"
+url: "https://dpflabs.com"
+abstract: "Protótipo educacional e de pesquisa, com dados simulados, que explora telefarmácia e predição de adesão terapêutica para apoiar a gestão da saúde pública. Desenvolvido para participação no 32º Prêmio Jovem Cientista (CNPq, 2026)."
+keywords:
+  - telefarmácia
+  - adesão terapêutica
+  - saúde pública
+  - inteligência artificial
